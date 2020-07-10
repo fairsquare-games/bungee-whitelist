@@ -1,0 +1,5 @@
+name: BungeeWhitelist
+version: ${project.version}
+main: net.fairsquare.bungeewhitelist.BungeeWhitelist
+description: The Bungee-wide whitelist plugin for FairSquare Games.
+author: McJeffr
