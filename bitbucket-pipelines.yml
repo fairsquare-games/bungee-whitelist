@@ -13,10 +13,9 @@ pipelines:
       - step:
           name: CD
           script:
-            - ls
-            - ls target
+            - FILE_NAME=$(ls target)
             - pipe: atlassian/bitbucket-upload-file:0.1.8
               variables:
                 BITBUCKET_USERNAME: $BITBUCKET_USERNAME
                 BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
-                FILENAME: target/bungee-whitelist-*.jar
+                FILENAME: target/$FILE_NAME
