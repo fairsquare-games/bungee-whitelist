@@ -42,8 +42,8 @@ public class UuidUtil {
         Request request = new Request.Builder().url(BASE_URL + username).build();
         try (Response response = client.newCall(request).execute()) {
             ResponseBody body = response.body();
-            if (body == null) {
-                throw new IOException("Response from Mojang contained no body");
+            if (body == null || body.contentLength() == 0) {
+                return null;
             }
             return om.readValue(body.byteStream(), MojangApiResponse.class).getUniqueId();
         } catch (IOException e) {

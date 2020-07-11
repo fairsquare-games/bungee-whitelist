@@ -32,11 +32,12 @@ public final class BungeeWhitelist extends Plugin {
     }
 
     /**
-     * Updates all dependants with the provided whitelist.
+     * Updates all dependants with the provided whitelist, as well as saves the whitelist to file.
      *
      * @param whitelist The whitelist to pass on to all the dependants.
      */
     public void updateWhitelist(Whitelist whitelist) {
+        ConfigUtil.saveWhitelist(whitelist);
         for (Dependant<Whitelist> dependant : dependants) {
             dependant.inject(whitelist);
         }

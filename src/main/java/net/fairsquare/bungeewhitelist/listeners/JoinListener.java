@@ -1,9 +1,8 @@
 package net.fairsquare.bungeewhitelist.listeners;
 
 import net.fairsquare.bungeewhitelist.models.Dependant;
+import net.fairsquare.bungeewhitelist.models.Message;
 import net.fairsquare.bungeewhitelist.models.Whitelist;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -38,12 +37,14 @@ public class JoinListener implements Listener, Dependant<Whitelist> {
 
     @EventHandler
     public void onPostLogin(PostLoginEvent event) {
+        if (!whitelist.isEnabled()) {
+            return;
+        }
+
         ProxiedPlayer player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-
         if (!whitelist.isWhitelisted(uuid)) {
-            player.disconnect(new TextComponent(ChatColor.RED +
-                    "You are not whitelisted on this server"));
+            player.disconnect(Message.KICK_MESSAGE.getTextComponent());
         }
     }
 
