@@ -17,8 +17,12 @@ import java.util.logging.Level;
  */
 public class ConfigUtil {
 
+    /* Constants */
     private static final String CONFIG_FILE = "config.json";
 
+    /**
+     * Creates the default configuration file (and data directory) if they don't yet exist.
+     */
     public static void createDefaultConfig() {
         BungeeWhitelist plugin = BungeeWhitelist.getPlugin();
 
@@ -46,6 +50,12 @@ public class ConfigUtil {
         }
     }
 
+    /**
+     * Loads the whitelist from the configuration file. If no configuration file exists yet, it
+     * creates one and returns the default configuration.
+     *
+     * @return The whitelist that was loaded from the configuration file.
+     */
     public static Whitelist loadWhitelist() {
         createDefaultConfig();
 
@@ -60,6 +70,12 @@ public class ConfigUtil {
         }
     }
 
+    /**
+     * Saves the whitelist to the configuration file. If the configuration file does not yet
+     * exist, it creates it first.
+     *
+     * @param whitelist The whitelist to save to the configuration file.
+     */
     public static void saveWhitelist(Whitelist whitelist) {
         createDefaultConfig();
 
@@ -73,6 +89,11 @@ public class ConfigUtil {
         }
     }
 
+    /**
+     * Gets the configuration file as the File object.
+     *
+     * @return The file object that represents the configuration file.
+     */
     private static File getConfigFile() {
         return new File(BungeeWhitelist.getPlugin().getDataFolder() +
                 File.separator + CONFIG_FILE);

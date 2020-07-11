@@ -1,11 +1,17 @@
 package net.fairsquare.bungeewhitelist.commands;
 
+import net.fairsquare.bungeewhitelist.BungeeWhitelist;
 import net.fairsquare.bungeewhitelist.models.Dependant;
 import net.fairsquare.bungeewhitelist.models.Whitelist;
-import net.md_5.bungee.api.ChatColor;
+import net.fairsquare.bungeewhitelist.models.WhitelistEntry;
+import net.fairsquare.bungeewhitelist.utils.ConfigUtil;
+import net.fairsquare.bungeewhitelist.utils.UuidUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+
+import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * This class implements the /whitelist command that is used to manage the whitelist.
@@ -75,6 +81,22 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
         }
 
         String username = args[1];
+
+        /* Fetch the UUID in async as we don't want to block the main thread with network IO */
+        final BungeeWhitelist plugin = BungeeWhitelist.getPlugin();
+        sendMessage(sender, "Retrieving UUID for " + username + "...");
+        plugin.getProxy().getScheduler().runAsync(plugin, () -> {
+            UUID uuid = UuidUtil.retrieveUniqueId(username);
+            if (uuid == null) {
+                plugin.getLogger().log(Level.WARNING, "Could not retrieve UUID: null");
+                return;
+            }
+            sendMessage(sender, "Retrieved UUID: " + uuid.toString() +
+                    " for username " + username);
+            whitelist.addEntry(new WhitelistEntry(uuid, username));
+            ConfigUtil.saveWhitelist(whitelist);
+            plugin.updateWhitelist(whitelist);
+        });
     }
 
     private void removeCommand(CommandSender sender, String[] args) {
