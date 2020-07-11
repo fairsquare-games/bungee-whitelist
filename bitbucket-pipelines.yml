@@ -1,0 +1,20 @@
+image: atlassian/default-image:latest
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: CI
+          image: maven:3.3.9
+          script:
+            - mvn clean package
+          artifacts:
+            - target/bungee-whitelist-*.jar
+      - step:
+          name: CD
+          script:
+            - pipe: atlassian/bitbucket-upload-file:0.1.2
+              variables:
+                BITBUCKET_USERNAME: $BITBUCKET_USERNAME
+                BITBUCKET_APP_PASSWORD: $BITBUCKET_APP_PASSWORD
+                FILENAME: target/bungee-whitelist-*.jar
