@@ -11,6 +11,7 @@ public enum Message {
     EMPTY_LINE(""),
     SEPARATOR("&8--- --- --- --- --- --- --- --- ---"),
     KICK_MESSAGE("&cYou are not whitelisted on this server"),
+    NO_PERMISSION("&cYou don't have permission to execute this command."),
     PLUGIN_DESCRIPTION("&eFairSquare Bungee Whitelist plugin, version &6%1$s&e."),
     NOT_ENOUGH_ARGUMENTS("&cNot enough arguments provided. Usage:"),
     UNKNOWN_SUBCOMMAND("&eUnknown subcommand &6%1$s&e. Use &6/whitelist help &eto see all available commands."),

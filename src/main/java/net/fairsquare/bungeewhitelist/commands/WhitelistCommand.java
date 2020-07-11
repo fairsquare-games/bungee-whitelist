@@ -20,6 +20,10 @@ import java.util.*;
  */
 public class WhitelistCommand extends Command implements Dependant<Whitelist> {
 
+    /* Constants */
+    private static final String COMMAND = "whitelist";
+    private static final String PERMISSION = "fairsquare.whitelist";
+
     /* Attributes */
     private Whitelist whitelist;
 
@@ -29,7 +33,7 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
      * @param whitelist The whitelist.
      */
     public WhitelistCommand(Whitelist whitelist) {
-        super("whitelist");
+        super(COMMAND, PERMISSION);
         this.whitelist = whitelist;
     }
 
@@ -40,6 +44,11 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        if (!sender.hasPermission(PERMISSION)) {
+            Message.NO_PERMISSION.send(sender);
+            return;
+        }
+
         if (args.length == 0) {
             helpCommand(sender, args);
             return;
