@@ -1,9 +1,7 @@
 package net.fairsquare.bungeewhitelist.listeners;
 
 import net.fairsquare.bungeewhitelist.BungeeWhitelist;
-import net.fairsquare.bungeewhitelist.models.Dependant;
-import net.fairsquare.bungeewhitelist.models.Message;
-import net.fairsquare.bungeewhitelist.models.Whitelist;
+import net.fairsquare.bungeewhitelist.models.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -52,6 +50,13 @@ public class JoinListener implements Listener, Dependant<Whitelist> {
 
         if (!whitelist.isWhitelisted(uuid)) {
             player.disconnect(Message.KICK_MESSAGE.getTextComponent());
+            return;
+        }
+
+        WhitelistEntry entry = whitelist.getEntry(uuid);
+        if (entry.getOption() != null && entry.getOption().getType() == OptionType.ONCE) {
+            whitelist.removeEntry(entry);
+            BungeeWhitelist.getPlugin().updateWhitelist(whitelist);
         }
     }
 

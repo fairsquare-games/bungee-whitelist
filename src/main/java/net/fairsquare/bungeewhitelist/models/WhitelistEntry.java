@@ -1,5 +1,7 @@
 package net.fairsquare.bungeewhitelist.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.UUID;
 
 /**
@@ -7,11 +9,13 @@ import java.util.UUID;
  *
  * @author McJeffr
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WhitelistEntry {
 
     /* Attributes */
     private UUID uuid;
     private String username;
+    private Option option;
 
     /**
      * Empty constructor.
@@ -30,6 +34,19 @@ public class WhitelistEntry {
     public WhitelistEntry(UUID uuid, String username) {
         this.uuid = uuid;
         this.username = username;
+    }
+
+    /**
+     * Extended constructor.
+     *
+     * @param uuid     The UUID of the user.
+     * @param username The (last known) username of the user.
+     * @param option   The additional whitelist option.
+     */
+    public WhitelistEntry(UUID uuid, String username, Option option) {
+        this.uuid = uuid;
+        this.username = username;
+        this.option = option;
     }
 
     /**
@@ -68,11 +85,30 @@ public class WhitelistEntry {
         this.username = username;
     }
 
+    /**
+     * Getter for the option of this entry.
+     *
+     * @return The option of this entry.
+     */
+    public Option getOption() {
+        return option;
+    }
+
+    /**
+     * Setter for the option of this entry.
+     *
+     * @param option The option of this entry.
+     */
+    public void setOptions(Option option) {
+        this.option = option;
+    }
+
     @Override
     public String toString() {
         return "WhitelistEntry{" +
                 "uuid=" + uuid +
                 ", username='" + username + '\'' +
+                ", option=" + option +
                 '}';
     }
 

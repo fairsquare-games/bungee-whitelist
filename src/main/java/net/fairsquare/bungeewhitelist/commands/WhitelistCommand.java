@@ -1,10 +1,7 @@
 package net.fairsquare.bungeewhitelist.commands;
 
 import net.fairsquare.bungeewhitelist.BungeeWhitelist;
-import net.fairsquare.bungeewhitelist.models.Dependant;
-import net.fairsquare.bungeewhitelist.models.Message;
-import net.fairsquare.bungeewhitelist.models.Whitelist;
-import net.fairsquare.bungeewhitelist.models.WhitelistEntry;
+import net.fairsquare.bungeewhitelist.models.*;
 import net.fairsquare.bungeewhitelist.utils.ConfigUtil;
 import net.fairsquare.bungeewhitelist.utils.UuidUtil;
 import net.md_5.bungee.api.CommandSender;
@@ -144,6 +141,15 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
             return;
         }
 
+        /* Parse the option from the arguments */
+        Option option;
+        try {
+            option = parseOption(args);
+        } catch (IllegalArgumentException e) {
+            Message.INVALID_OPTION.send(sender, args[2]);
+            return;
+        }
+
         String username = args[1];
 
         /* Fetch the UUID in async as we don't want to block the main thread with network IO */
@@ -162,7 +168,7 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
                 return;
             }
 
-            whitelist.addEntry(new WhitelistEntry(uuid, username));
+            whitelist.addEntry(new WhitelistEntry(uuid, username, option));
             plugin.updateWhitelist(whitelist);
 
             Message.ADDED_USER.send(sender, username);
@@ -208,13 +214,17 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
      */
     private void listCommand(CommandSender sender, String[] args) {
         Collection<WhitelistEntry> entries = whitelist.getEntries().values();
-        Message.AMOUNT_WHITELISTED.send(sender, entries.size());
+        Message.WHITELIST_ENTRIES.send(sender, entries.size());
 
         StringBuilder sb = new StringBuilder(Message.PREFIX.getText());
         Iterator<WhitelistEntry> it = entries.iterator();
         while (it.hasNext()) {
             WhitelistEntry entry = it.next();
-            sb.append(Message.WHITELIST_ENTRY.getText(entry.getUsername()));
+            if (entry.getOption() == null) {
+                sb.append(Message.WHITELIST_ENTRY.getText(entry.getUsername()));
+            } else {
+                sb.append(Message.WHITELIST_ENTRY_OPTION.getText(entry.getUsername()));
+            }
             if (it.hasNext()) {
                 sb.append(Message.WHITELIST_ENTRY_SEPARATOR.getText());
             }
@@ -265,6 +275,31 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
         Whitelist whitelist = ConfigUtil.loadWhitelist();
         BungeeWhitelist.getPlugin().updateWhitelist(whitelist);
         Message.RELOADED.send(sender);
+    }
+
+    /**
+     * Parses the correct option instance from the given command arguments, or null if no valid
+     * option could be parsed.
+     *
+     * @param args   The arguments of the command.
+     * @return An option instance derived from the provided arguments, or null if no valid option
+     * could be derived.
+     */
+    private Option parseOption(String[] args) throws IllegalArgumentException {
+        if (args.length < 3) {
+            return null;
+        }
+
+        String optionName = args[2];
+        OptionType type = OptionType.valueOf(optionName.toUpperCase());
+
+        switch (type) {
+            case ONCE: {
+                return new OnceOption();
+            }
+        }
+
+        return null;
     }
 
 }
