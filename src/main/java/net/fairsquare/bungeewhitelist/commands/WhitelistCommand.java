@@ -67,6 +67,9 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
             case "list":
                 listCommand(sender, args);
                 break;
+            case "show":
+                showCommand(sender, args);
+                break;
             case "on":
                 enableCommand(sender, args);
                 break;
@@ -107,6 +110,7 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
         Message.ADD_COMMAND.send(sender);
         Message.REMOVE_COMMAND.send(sender);
         Message.LIST_COMMAND.send(sender);
+        Message.SHOW_COMMAND.send(sender);
         Message.ENABLE_COMMAND.send(sender);
         Message.DISABLE_COMMAND.send(sender);
         Message.RELOAD_COMMAND.send(sender);
@@ -189,19 +193,13 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
         }
 
         String username = args[1];
-        WhitelistEntry matchedEntry = null;
-        for (WhitelistEntry entry : whitelist.getEntries().values()) {
-            if (entry.getUsername().equals(username)) {
-                matchedEntry = entry;
-                break;
-            }
-        }
-        if (matchedEntry == null) {
+        WhitelistEntry entry = whitelist.findEntry(username);
+        if (entry == null) {
             Message.NOT_WHITELISTED.send(sender, username);
             return;
         }
 
-        whitelist.removeEntry(matchedEntry);
+        whitelist.removeEntry(entry);
         BungeeWhitelist.getPlugin().updateWhitelist(whitelist);
         Message.REMOVED_USER.send(sender, username);
     }
@@ -278,10 +276,38 @@ public class WhitelistCommand extends Command implements Dependant<Whitelist> {
     }
 
     /**
+     * Shows information about a whitelisted player.
+     *
+     * @param sender The sender of the command.
+     * @param args   The arguments of the command.
+     */
+    private void showCommand(CommandSender sender, String[] args) {
+        if (args.length < 2) {
+            Message.NOT_ENOUGH_ARGUMENTS.send(sender);
+            Message.SHOW_COMMAND.send(sender);
+            return;
+        }
+
+        String username = args[1];
+        WhitelistEntry entry = whitelist.findEntry(username);
+        if (entry == null) {
+            Message.NOT_WHITELISTED.send(sender, username);
+            return;
+        }
+
+        Message.SHOW_OPTIONS.send(sender, username);
+        if (entry.getOption() == null) {
+            Message.SHOW_NO_OPTIONS.send(sender);
+        } else {
+            sender.sendMessage(entry.getOption().getInformation());
+        }
+    }
+
+    /**
      * Parses the correct option instance from the given command arguments, or null if no valid
      * option could be parsed.
      *
-     * @param args   The arguments of the command.
+     * @param args The arguments of the command.
      * @return An option instance derived from the provided arguments, or null if no valid option
      * could be derived.
      */

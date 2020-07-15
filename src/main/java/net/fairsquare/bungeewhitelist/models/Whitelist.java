@@ -53,6 +53,21 @@ public class Whitelist {
     }
 
     /**
+     * Finds a whitelist entry using the provided username.
+     *
+     * @param username The username to search for.
+     * @return The whitelist entry if it was found, null if none was found.
+     */
+    public WhitelistEntry findEntry(String username) {
+        for (WhitelistEntry entry : entries.values()) {
+            if (entry.getUsername().equals(username)) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Getter for the entries on this whitelist. Each entry specifies a player that is whitelisted.
      *
      * @return The entries on this whitelist.

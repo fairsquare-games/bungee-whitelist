@@ -2,6 +2,7 @@ package net.fairsquare.bungeewhitelist.models;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 /**
  * Abstract class that represents an option of a whitelist entry.
@@ -30,6 +31,13 @@ public abstract class Option {
     public Option(OptionType type) {
         this.type = type;
     }
+
+    /**
+     * Returns information about this option.
+     *
+     * @return Information about this option.
+     */
+    public abstract BaseComponent[] getInformation();
 
     /**
      * Getter for the type of the option.

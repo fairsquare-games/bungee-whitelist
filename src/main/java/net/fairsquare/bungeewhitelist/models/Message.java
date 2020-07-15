@@ -21,6 +21,7 @@ public enum Message {
     REMOVE_COMMAND("&8- &6/whitelist remove &8<&6username&8> &eremoves a user from the whitelist."),
     STATUS_COMMAND("&8- &6/whitelist status &edisplays the status of the whitelist."),
     LIST_COMMAND("&8- &6/whitelist list &elists all whitelisted users."),
+    SHOW_COMMAND("&8- &6/whitelist show &8<&6username&8> &eshows whitelist information about the player."),
     ENABLE_COMMAND("&8- &6/whitelist enable &eenables the whitelist."),
     DISABLE_COMMAND("&8- &6/whitelist disable &edisables the whitelist."),
     RELOAD_COMMAND("&8- &6/whitelist reload &ereloads the whitelist from config."),
@@ -42,6 +43,9 @@ public enum Message {
     WHITELIST_ENTRY_SEPARATOR("&8, "),
     WHITELIST_STATUS_CHANGE("&eThe whitelist is now %1$s&e."),
     WHITELIST_ALREADY_STATUS("&cThe whitelist is already %1$s&c."),
+    SHOW_OPTIONS("&eOptions for whitelisted user &6%1$s&e:"),
+    SHOW_NO_OPTIONS("&8- &eNo custom options."),
+    SHOW_ONCE_OPTION("&8- &eONCE. This user can only join the server once."),
     RELOADED("&eReloaded the plugin from the configuration file.");
 
     private final String text;
